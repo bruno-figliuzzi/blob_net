@@ -2,6 +2,12 @@
 
 **Keywords:** Python, PyTorch, Deep Learning, Image Segmentation
 
+## Table of contents
+1. [ Introduction ](#1-introduction)
+2. [ Data Organization ](#2-data-organization)
+3. [ Scripts ](#3-scripts)  
+4. [ How to use the code ](#4-how-to)
+
 ## 1. Introduction
 
 This repository contains the Python code used for the implementation of the BlobNet algorithm. The code allows to:
@@ -11,6 +17,16 @@ This repository contains the Python code used for the implementation of the Blob
 - apply the network to actual images obtained during the experiments
 
 5 experimental images were annotated manually in order to evaluate the performance of the algorithm and are available in the repository
+
+### Requirements
+
+The code relies upon the following Python libraries:
+- numpy
+- matplotlib
+- scikit-image
+- scipy
+- pytorch
+
 
 
 ## 2. Data Organization
@@ -49,17 +65,7 @@ Note:
 - `kmeans.py`: Segmentation with a K-means algorithm
 
 
-## 4. Requirements
-
-The code relies upon the following Python libraries:
-- numpy
-- matplotlib
-- scikit-image
-- scipy
-- pytorch
-
-
-## 5. How to use the code
+## 4. How to use the code
 
 
 1. How to generate synthetic images for the training set:
