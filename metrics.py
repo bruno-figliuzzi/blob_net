@@ -175,7 +175,7 @@ if __name__ == '__main__':
 
     # Paths
     img_dir = './dataset/imgs/'
-    segmentation_dir = './results/segments/'
+    segmentation_dir = './results/'
     groundtruth_dir = './dataset/img_truths/'
     crop = 1
     IoU_threshold = 1e-3

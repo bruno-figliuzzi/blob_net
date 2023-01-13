@@ -1,9 +1,7 @@
 # -*- Encoding: Latin-1 -*-
 #!/usr/bin/python
 
-"""
-Generation of synthetic images used to train the neural network
-"""
+#version 02/07/2020
 
 import os
 from math import *
@@ -12,21 +10,26 @@ import matplotlib.pyplot as plt
 from skimage.filters import gaussian
 from skimage.io import imsave
 
+# ---------------------------------
+# Some tools
+# ---------------------------------
+THIS_FOLDER=os.path.dirname(os.path.abspath(__file__))
+labels_dir = os.path.join(THIS_FOLDER,'labels')
+train_dir = os.path.join(THIS_FOLDER,'train')
+test_dir = os.path.join(THIS_FOLDER,'test')
+val_dir = os.path.join(THIS_FOLDER,'val')
+
 
 def generate_disk(R):
 
     """
     Generate an array containing a disk with radius R
 
-    Parameters
-    ----------
-    R: int
-      specified radius
+    :param R: specified radius
+    :type R: int
 
-    Returns
-    -------
-    out: numpy array
-       array containing a disk
+    :return: array containing a disk
+    :rtype: numpy array
     """
 
     x = np.linspace(-R, R, 2*R+1)
@@ -35,31 +38,15 @@ def generate_disk(R):
     output = np.power(xx, 2) + np.power(yy, 2) <= pow(R, 2)
     return output.astype('int')
 
-#--------------------------------------------------
-# Image generation
-# -------------------------------------------------
+
+# ---------------------------------
+# Class generating images
+# ---------------------------------
 
 class Simulation:
 
     """
-    Generation of synthetic images to train the neural network
-
-    Attributes
-    ----------
-    nx, ny: int
-       size of the simulation domain
-    vol: int
-       volume of the simulation domain
-    xmean: int
-       average coordinates at w
-    N: int
-       number of implanted particles
-    x, y: numpy arrays
-       coordinates of the implanted particles
-    R: numpy array
-       sampled radii for the implanted particles
-    img: numpy array
-       simulated image
+    Generation of simulated example to train the neural network
     """
 
     def __init__(self, field, xmean, xscale):
@@ -67,18 +54,14 @@ class Simulation:
         """
         Class contructor
 
-        Parameters
-        -----------
-        field: tuple of integers
-           simulation field
-        xmean: int
-           average coordinate at which particles appear
-        xscale: int
-           corresponding standard deviation
-        border: numpy array
-           mask for the image border
-        mask: numpy array
-           mask for the particles
+        :param field: Simulation field
+        :type field: tuple of integers
+
+        :param xmean: Average coordinate at which particles appear
+        :type xmean: int
+
+        :param xscale: Corresponding standard deviation
+        :type xscale: int
         """
 
         self.nx, self.ny = field
@@ -87,19 +70,18 @@ class Simulation:
         self.xscale= xscale
 
 
+
     def generate_borders(self, thickness, amp, rmin, rmax):
 
         """
-        Generate random borders
+        Generate the borders of the image
 
-        Parameters
-        ----------
-        thickness: float
-           thickness of the border
-        amp: float
-           amplitude of the large scale perturbation
-        rmin/rmax: float
-           minimal/maximal attenuation factor
+        :param thickness: Thickness of the border
+        :type thickness: float
+        :param amp: Amplitude of the large scale perturbation
+        :type amp: float
+        :param rmin/rmax: minimal/maximal attenuation factor
+        :type rmn/rmax: float
         """
 
         phase = (2*pi/self.nx)*np.arange(self.nx) + np.pi
@@ -122,32 +104,29 @@ class Simulation:
         """
         Simulate particles
 
-        Parameters
-        ----------
-        theta: float
-           average number of particles per surface unit
-        R: float
-           mean particle radius
-        sigma: float
-           corresponding standard deviation
+        :param theta: Average number of particles per surface unit
+        :type theta: float
+        :param R: mean particle radius
+        :type R: float
+        :param sigma: corresponding standard deviation
+        :type sigma: float
         """
 
         self.N = np.random.poisson(theta*self.vol)
         self.R = np.random.normal(loc=R, scale=sigma, size=self.N).astype('int')
-        self.x = np.random.uniform(np.max(self.R), self.nx - np.max(self.R), 
-          self.N).astype('int')
-        self.y = np.random.uniform(np.max(self.R), self.ny - np.max(self.R), 
-          self.N).astype('int')
+        self.x = np.random.uniform(np.max(self.R), self.nx - np.max(self.R), self.N).astype('int')
+        self.y = np.random.uniform(np.max(self.R), self.ny - np.max(self.R), self.N).astype('int')
 
         keep = []
         for idx, (xc, yc) in enumerate(zip(self.x, self.y)):
-            if(self.border[xc, yc] > 0.5 and xc > np.random.normal(
-             loc=self.xmean, scale=self.xscale)):
+            if self.border[xc, yc] > 0.5 and xc > np.random.normal(loc=self.xmean, scale=self.xscale):
                 keep.append(idx)
 
         self.x = self.x[keep]
         self.y = self.y[keep]
         self.R = self.R[keep]
+
+            
 
         # Hardcore process
         idx = 0
@@ -155,9 +134,8 @@ class Simulation:
 
             xc, yc, Rc = self.x[idx], self.y[idx], self.R[idx]
 
-            dist = np.sqrt(np.power(self.x[:idx] - xc, 2) +\
-              np.power(self.y[:idx] - yc, 2)) -\
-              0.9*(Rc + self.R[:idx])
+            dist = np.sqrt(np.power(self.x[:idx] - xc, 2) + np.power(self.y[:idx] - yc, 2))\
+              - 0.9*(Rc + self.R[:idx])
 
             keep = (np.sum(dist<0) == 0)
             if(keep):
@@ -182,8 +160,7 @@ class Simulation:
 
             x, y, R = self.x[n], self.y[n], self.R[n]
             arr = generate_disk(R)
-            self.mask[x-R:x+R, y-R:y+R] = np.maximum(
-              self.mask[x-R:x+R, y-R:y+R], arr)
+            self.mask[x-R:x+R, y-R:y+R] = np.maximum(self.mask[x-R:x+R, y-R:y+R], arr)
 
         self.mask = self.mask.astype('bool')
 
@@ -195,8 +172,7 @@ class Simulation:
         """
 
         self.center_coordinates = np.array([self.y,self.x]).T
-        np.savetxt(os.path.join(labels_dir,'coord_'+str(idx)+'.csv'), 
-          self.center_coordinates,fmt='%5.2f')
+        np.savetxt(os.path.join(labels_dir,'coord_'+str(idx)+'.csv'),self.center_coordinates,fmt='%5.2f')
 
 
     def generate_img(self, gray, freqs, amps):
@@ -204,15 +180,12 @@ class Simulation:
         """
         Generate the final image
 
-        Parameters
-        -----------
-
-        gray: int
-           average gray level
-        freqs: tuple of floats
-           frequencies of the periodic noise
-        amps: tuple of floats
-           amplitudes of the periodic noise     
+        :param gray: Average gray level
+        :type gray int
+        :param freqs: Frequencies of the periodic noise
+        :type freqs: tuple of floats
+        :param amps: Amplitudes of the periodic noise
+        :type amps: tuple of floats       
         """
 
         f1, f2 = freqs
@@ -222,12 +195,8 @@ class Simulation:
         self.img = gray*np.ones((self.nx, self.ny))
 
         # Periodic noise
-        x = np.linspace(0, 1., self.nx) + np.random.normal(loc=0, 
-          scale=10./self.nx, size=self.nx)
-
-        y = np.linspace(0, 1., self.ny) + np.random.normal(loc=0, 
-          scale=10./self.ny, size=self.ny)
-
+        x = np.linspace(0, 1., self.nx) + np.random.normal(loc=0, scale=10./self.nx, size=self.nx)
+        y = np.linspace(0, 1., self.ny) + np.random.normal(loc=0, scale=10./self.ny, size=self.ny)
         yy, xx = np.meshgrid(y, x)
         amp1 = amp1*np.ones_like(self.img)
         amp2 = amp2*np.ones_like(self.img)
@@ -245,12 +214,10 @@ class Simulation:
             arr = generate_disk(R)
             color = np.random.uniform(20, 35)
             arr = 255*(1 - arr) + color*arr
-            self.particles[x-R:x+R, y-R:y+R] = np.minimum(
-              self.particles[x-R:x+R, y-R:y+R], arr)
+            self.particles[x-R:x+R, y-R:y+R] = np.minimum(self.particles[x-R:x+R, y-R:y+R], arr)
 
         self.img = self.img.ravel()
-        self.img[self.mask.astype('bool').ravel()] =\
-         self.particles.ravel()[self.mask.astype('bool').ravel()]
+        self.img[self.mask.astype('bool').ravel()] = self.particles.ravel()[self.mask.astype('bool').ravel()]
 
         # Add blur and noise, handles borders
         self.img = self.img.reshape((self.nx, self.ny))
@@ -266,66 +233,58 @@ class Simulation:
         """
         Add large scale variations to the image
 
-        Parameters
-        ----------
-
-        v: numpy array
-           array of relative values for the image intensity
-        deg: int
-           degree of the fitting polynomial
+        :param v: Array of relative values for the image intensity
+        :type v: numpy array
+        :param deg: degree of the fitting polynomial
+        :type deg: int
         """
 
         c = np.linspace(0, self.nx - 1, len(v))
         p = np.polyfit(c, v, deg)
+
         xfull = np.arange(self.nx)
         ratio = np.zeros((self.nx, 1))
+
         for n in range(deg + 1):
             ratio[:, 0] += p[n]*np.power(xfull, deg - n)
-        self.img *= np.repeat(ratio, self.ny, axis=1)
-        self.img = self.img.astype('uint8')
 
+        self.img *= np.repeat(ratio, self.ny, axis=1)
+
+        self.img = self.img.astype('uint8')
         
     def create_gaussian_mask(self, std=5):
         """
         Creates a mask with 2d gaussians placed at each center of the particles.
-        Gaussians range from 0 to 1 with std="std"
-        The image is saved at the specified location 
-
-        Parameters
-        ----------
-        std: float
-            scale of the 2d gaussians    
+        Gaussians range from 0 to 1 with std="std".
         """
         size = 20
         
-        def gaussian_mask(y0, x0, size, sigma):
-
+        def gaussian_mask(y0,x0,size,sigma):
             mask_temp=np.zeros(self.img.T.shape) 
-            if x0<=size or y0<=size or self.img.T.shape[0]-y0<=size or\
-             self.img.T.shape[1]-x0<=size:
-                size=int(min(x0,y0,self.img.T.shape[0]-y0,
-                 self.img.T.shape[1]-x0))-1
+            if x0<=size or y0<=size or self.img.T.shape[0]-y0<=size or self.img.T.shape[1]-x0<=size:
+                size=int(min(x0,y0,self.img.T.shape[0]-y0,self.img.T.shape[1]-x0))-1
                 
             lin = np.arange(-size,size+1)
             x,y = np.meshgrid(lin,lin)
-            mask_temp[int(y0)-size:int(y0)+size+1,int(x0)-size:int(x0)+size+1]=\
-             np.exp(-(x**2 + y**2)/(2*sigma**2))
+            #print(mask[int(y0)-size:int(y0)+size+1,int(x0)-size:int(x0)+size+1].shape)
+            mask_temp[int(y0)-size:int(y0)+size+1,int(x0)-size:int(x0)+size+1] = np.exp(-(x**2 + y**2)/(2*sigma**2))
             return mask_temp
         
         coord_list = self.center_coordinates
         
         #draw gaussians
-        mask=np.zeros(self.img.T.shape)
-        for center_coord in coord_list:
+        mask=np.zeros(self.img.T.shape)   #create empty mask
+        for center_coord in coord_list:         #iterate through coordinates 
             y0, x0 = center_coord
+    
+            #print(gaussian_mask(y0,x0,20,5,self.img.T.shape).shape)
             mask=np.fmax(mask,gaussian_mask(y0,x0,size,std))
         
         #Gaussian filter
         mask=gaussian(mask,sigma=2)
 
         #save the results
-        imsave(os.path.join(labels_dir,'gaussian_'+str(idx)+'.png'), 
-         mask, plugin=None, check_contrast=False)
+        imsave(os.path.join(labels_dir,'gaussian_'+str(idx)+'.png'), mask, plugin=None, check_contrast=False)
         
 # ----------------------------------------------------
 # Image simulation
@@ -334,14 +293,8 @@ class Simulation:
 def simulate():
 
     """
-    Script for generating a simulated image.
-
-    Returns
-    -------
-    out: instance of the class Simulation
-       simulated image
+    Generate an image
     """
-
     field = (4000, 1000)
     xmean = int(np.random.uniform(0, 1500))
     xscale = int(np.random.uniform(0, 30))
@@ -373,9 +326,7 @@ def simulate():
     inst.create_gaussian_mask()
     
     # Add large scale variations to the image
-    v = np.array([np.random.uniform(0.5, 0.9), 1., 1., 
-       np.random.uniform(0.2, 0.8)])
-
+    v = np.array([np.random.uniform(0.5, 0.9), 1., 1., np.random.uniform(0.2, 0.8)]) #1.2 et 1.8
     inst.add_form(v)
     return inst
 
@@ -385,26 +336,34 @@ def simulate():
 # ----------------------------------------------------     
 if __name__ == '__main__':
 
-    # Specify the location of the folders storing the 
-    THIS_FOLDER=os.path.dirname(os.path.abspath(__file__))
-    labels_dir = os.path.join(THIS_FOLDER,'labels')
-    train_dir = os.path.join(THIS_FOLDER,'train')
-    test_dir = os.path.join(THIS_FOLDER,'test_synthesis')
-    val_dir = os.path.join(THIS_FOLDER,'val')
-
-    # Training set
-    for idx in range(0,160):
+    for idx in range(0,140):
         print(idx)
         inst = simulate()
-        imsave(os.path.join(train_dir,str(idx) + ".png"), inst.img.T)
-        np.save(os.path.join(labels_dir,"binary_" + str(idx) + ".npy"), 
-         inst.mask.T)
+        imsave(os.path.join(test_dir,str(idx) + ".png"), inst.img.T)
+        np.save(os.path.join(labels_dir,"binary_" + str(idx) + ".npy"), inst.mask.T)
 
-    # Validation set
+     
+    for idx in range(140,160):
+        print(idx)
+        inst = simulate()
+        imsave(os.path.join(test_dir,"img" + str(idx) + ".png"), inst.img.T)
+        np.save(os.path.join(labels_dir,"binary_" + str(idx) + ".npy"), inst.mask.T)
+
+
     for idx in range(160,200):
         print(idx)
         inst = simulate()
         imsave(os.path.join(val_dir,"img" + str(idx) + ".png"), inst.img.T)
-        np.save(os.path.join(labels_dir,"binary_" + str(idx) + ".npy"), 
-         inst.mask.T)
-         
+        np.save(os.path.join(labels_dir,"binary_" + str(idx) + ".npy"), inst.mask.T) 		
+
+
+
+                
+                    
+       
+
+        
+
+
+
+

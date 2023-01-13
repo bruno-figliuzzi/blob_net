@@ -154,7 +154,11 @@ class Segmentation:
     def display(self):
         
         """
-        Display the results
+        Display the results:
+        - original image with the centers of the particles superimposed
+        - binary mask for the particles
+        - distance image used to compute the watershed
+        - label image of the particles
         """
 
         fig, ax = plt.subplots(2, 2, figsize=(10, 8), sharex=True, sharey=True)
@@ -178,7 +182,7 @@ class Segmentation:
 # ----------------------------------------------------     
 if __name__ == '__main__':
 
-    path = './dataset/synthesis/'
+    path = './dataset/imgs/'
     names = os.listdir(path)
     for name in names:
     
@@ -189,7 +193,7 @@ if __name__ == '__main__':
         inst.otsu_threshold()
         inst.extract_centers(min_distance=10)
         segments = inst.watershed_segmentation()
-        #inst.display()
-        np.save('./results/segments_synthesis/' + name[:-4] + '_otsu.npy', 
-          inst.img_regions)
+        inst.display()
+        #np.save('./results/segments_synthesis/' + name[:-4] + '_otsu.npy', 
+        # inst.img_regions)
 

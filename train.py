@@ -55,9 +55,9 @@ def train(epoch):
         f.write('%d %.15f\n' % (epoch + 1, training_loss))
 
     # Save weights
-    if(epoch % 100 == 0):
+    if(epoch % 10 == 0):
         torch.save(net.state_dict(), 
-          os.path.join(weights_path,str(epoch//100) + '.pth'))
+          os.path.join(weights_path,str(epoch//10) + '.pth'))
 
 
 def test(epoch):
@@ -97,8 +97,8 @@ if __name__ == '__main__':
     # Paths
     THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
     root_dir = os.path.join(THIS_FOLDER,'dataset')
-    train_dir = 'train_true'
-    test_dir = 'val_true'
+    train_dir = 'train'
+    test_dir = 'val'
     target_dir = 'labels'
 
     # Select a device
@@ -109,9 +109,9 @@ if __name__ == '__main__':
     d = 7
     w = 24
     dict_weights = None
-    batch_size = 2
+    batch_size = 8
     start_epoch = 0
-    num_epochs = 25000
+    num_epochs = 50
     learning_rate = 0.01
     divide = 2.  
     each = 50
