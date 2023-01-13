@@ -28,18 +28,18 @@ Note:
 Scripts
 -----------------
 
-Training set generation
-|--generation.py    *# Synthetic images generation*
+- Training set generation
+--generation.py    *# Synthetic images generation*
 
-Segmentation
-|--network.py       *# Neural network implementation*
-|--dataset.py       *# Methods used by the neural network to handle the dataset*
-|--train.py         *# Neural network training*
-|--segmentation.py  *# Segmentation of the images of the database*
-|--metrics.py       *# Segmentation metrics*
+- Segmentation
+--network.py       *# Neural network implementation*
+--dataset.py       *# Methods used by the neural network to handle the dataset*
+--train.py         *# Neural network training*
+--segmentation.py  *# Segmentation of the images of the database*
+--metrics.py       *# Segmentation metrics*
 
-Other
-|--kmeans.py        *# Segmentation with a K-means algorithm*
+- Other
+--kmeans.py        *# Segmentation with a K-means algorithm*
 
 
 
