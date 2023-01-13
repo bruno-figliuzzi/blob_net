@@ -1,6 +1,6 @@
 # blob_net
 
-**Keywords:** Python, PyTorch, Deep Learning, Image Segmentation
+**Keywords:** Python, Rheology, Segmentation of suspensions, PyTorch, Deep Learning
 
 ## Table of contents
 1. [ Introduction ](#1-introduction)
@@ -27,7 +27,14 @@ The code relies upon the following Python libraries:
 - scipy
 - pytorch
 
-
+To install the project:
+```bash
+# clone the project
+cd /path/to/project/
+git clone https://github.com/bruno-figliuzzi/blob_net.git
+cd blob_net/
+# install requirements
+```
 
 ## 2. Data Organization
 
