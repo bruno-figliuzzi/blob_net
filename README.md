@@ -12,7 +12,8 @@ This repository contains the Python code used for the implementation of the Blob
 Data Organization
 -----------------
 
-- dataset/imgs/        *     experimental images*
+- dataset/imgs/        
+  *experimental images*
 - dataset/img_truths/  *     annotations of the experimental images*
 - weights/             *     weights of the trained neural network*
 
