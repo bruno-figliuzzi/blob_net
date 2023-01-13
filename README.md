@@ -1,5 +1,9 @@
 # blob_net
 
+**Keywords:** Python, PyTorch, Deep Learning, Image Segmentation
+
+## 1. Introduction
+
 This repository contains the Python code used for the implementation of the BlobNet algorithm. The code allows to:
 
 - generate synthetic images in conjonction with a ground truth in order to train the convolutional network without using any annotated image
@@ -9,33 +13,29 @@ This repository contains the Python code used for the implementation of the Blob
 5 experimental images were annotated manually in order to evaluate the performance of the algorithm and are available in the repository
 
 
-Data Organization
------------------
+## 2. Data Organization
 
-1. dataset
-   *dataset/imgs/
-   *dataset/img_truths/
-   *dataset/train/
-   *dataset/val/
-   *dataset/labels
-  *experimental images*
-- dataset/img_truths/  *     annotations of the experimental images*
-- weights/             *     weights of the trained neural network*
+- `dataset/imgs/`: images of the suspension 
+- `dataset/img_truths/`: annotated images
+- `dataset/train/`: training set of synthesized images (only 40 images have been kept)
+- `dataset/val/`: validation set of synthesized images (only 10 images have been kept)
+- `dataset/labels/`: labels for the training/validation images
+- `results/`: segmentation results for the suspension images
+- `weights/`: weights of the trained neural network architecture
 
 Note:
 
 - all images are PNG files
 - the annotations are numpy files.
-- the annotations (in dataset/img_truths/) are images-like numpy array where 
-  each particle appears with a specific label
+- the annotations (in dataset/img_truths/) are images-like numpy array where each particle appears with a specific label
 
 
-Scripts
+## 3. Scripts
 -----------------
 
 1. Training set generation
 
--generation.py    *Synthetic images generation*
+- generation.py    *Synthetic images generation*
 
 2. Segmentation
 
@@ -80,4 +80,7 @@ neural network architecture
 Edit "segmentation.py" and run:
 ~$ python segmentation.py
 computes the segmentation of all images from the folder dataset/imgs/
+
+
+
 
