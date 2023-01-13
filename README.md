@@ -31,28 +31,26 @@ Note:
 
 
 ## 3. Scripts
------------------
 
 1. Training set generation
 
-- generation.py    *Synthetic images generation*
+- `generation.py`: Synthetic images generation
 
 2. Segmentation
 
-- network.py:       *Neural network implementation*
-- dataset.py:       *Methods used by the neural network to handle the dataset*
-- train.py:         *Neural network training*
-- segmentation.py:  *Segmentation of the images of the database*
-- metrics.py:       *Segmentation metrics*
+- `network.py`: Neural network implementation
+- `dataset.py`: Methods used by the neural network to handle the dataset
+- `train.py`: Neural network training
+- `segmentation.py`: Segmentation of the images of the database
+- `metrics.py`: Segmentation metrics
 
 3. Other
 
--kmeans.py:        *Segmentation with a K-means algorithm*
+- `kmeans.py`: Segmentation with a K-means algorithm
 
 
+## 4. Requirements
 
-Requirements
----------------------------
 The code relies upon the following Python libraries:
 - numpy
 - matplotlib
@@ -61,8 +59,8 @@ The code relies upon the following Python libraries:
 - pytorch
 
 
-How to use the code
--------------------
+## 5. How to use the code
+
 
 1. How to generate synthetic images for the training set:
 
