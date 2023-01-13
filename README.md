@@ -12,9 +12,9 @@ This repository contains the Python code used for the implementation of the Blob
 Data Organization
 -----------------
 
-- dataset/imgs/        *experimental images*
-- dataset/img_truths/  *annotations of the experimental images*
-- weights/             *weights of the trained neural network*
+- dataset/imgs/        *     experimental images*
+- dataset/img_truths/  *     annotations of the experimental images*
+- weights/             *     weights of the trained neural network*
 
 Note:
 
@@ -29,19 +29,19 @@ Scripts
 
 Training set generation
 
--generation.py    *# Synthetic images generation*
+-generation.py    *     Synthetic images generation*
 
 Segmentation
 
-- network.py       *Neural network implementation*
-- dataset.py       *Methods used by the neural network to handle the dataset*
-- train.py         *Neural network training*
-- segmentation.py  *Segmentation of the images of the database*
-- metrics.py       *Segmentation metrics*
+- network.py       *     Neural network implementation*
+- dataset.py       *     Methods used by the neural network to handle the dataset*
+- train.py         *     Neural network training*
+- segmentation.py  *     Segmentation of the images of the database*
+- metrics.py       *     Segmentation metrics*
 
 Other
 
--kmeans.py        *Segmentation with a K-means algorithm*
+-kmeans.py        *     Segmentation with a K-means algorithm*
 
 
 
